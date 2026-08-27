@@ -328,15 +328,15 @@
    CONFIGURATION supabaseClient
    Remplace seulement les deux valeurs ci-dessous.
    ============================================================ */
-const supabaseClient_URL = 'https://srtdxlkdbhzsfcbfdnbz.supabaseClient.co';
+const supabaseClient_URL = 'https://srtdxlkdbhzsfcbfdnbz.supabase.co';
 const supabaseClient_ANON_KEY = 'sb_publishable_bmZIbRNZR6yKOBS4ltHdFw_Bkbk1Pvp';
-
 const supabaseClientReady =
+
   supabaseClient_URL.startsWith('https://') &&
   !supabaseClient_URL.includes('COLLE_ICI') &&
   !supabaseClient_ANON_KEY.includes('COLLE_ICI');
 
-const supabaseClientClient = supabaseClientReady
+const supabaseClient = supabaseClientReady
   ? window.supabase.createClient(supabaseClient_URL, supabaseClient_ANON_KEY)
   : null;
 
