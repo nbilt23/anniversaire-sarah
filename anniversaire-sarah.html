@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anniversaire de Sarah</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root{
+    --bg-1: #fff2f6;
+    --bg-2: #ffd3e3;
+    --pink: #ff9ab8;
+    --pink-deep: #e8618d;
+    --cream: #ffffff;
+    --ink: #7a3b57;
+  }
+  *{ box-sizing: border-box; }
+  html,body{ height:100%; margin:0; }
+  body{
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(circle at 20% 15%, var(--bg-2), var(--bg-1) 60%);
+    color: var(--ink);
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .confetti{
+    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  }
+  .confetti span{
+    position:absolute; top:-5vh; font-size: 22px; opacity:.85;
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    to{ transform: translateY(110vh) rotate(360deg); }
+  }
+
+  /* ---------- TV / DISPLAY VIEW ---------- */
+  .display{
+    position:relative; z-index:1;
+    display:grid;
+    grid-template-columns: 380px 1fr;
+    gap: 40px;
+    padding: 48px;
+    min-height:100vh;
+  }
+  .invite-card{
+    background: var(--cream);
+    color: var(--ink);
+    border-radius: 28px;
+    padding: 32px 28px;
+    text-align:center;
+    box-shadow: 0 25px 60px rgba(232,97,141,.25);
+    height: fit-content;
+    align-self:start;
+    position:sticky; top:48px;
+    border: 1px solid #ffe1ec;
+  }
+  .invite-card h2{
+    font-family:'Baloo 2', sans-serif;
+    font-size: 26px;
+    margin: 0 0 6px;
+    color: var(--pink-deep);
+  }
+  .invite-card p{
+    margin: 0 0 18px;
+    font-weight:700;
+    font-size:15px;
+    color:#c58aa2;
+  }
+  #qrcode{
+    display:flex; justify-content:center; margin: 0 auto 16px;
+    padding: 14px; background:#fff; border-radius: 18px;
+    width:fit-content;
+    box-shadow: inset 0 0 0 3px var(--pink);
+  }
+  .invite-hint{
+    font-size:13px; color:#c58aa2; font-weight:600;
+  }
+
+  .wall-header{
+    grid-column: 2;
+    text-align:center;
+  }
+  .title{
+    font-family:'Baloo 2', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    margin:0;
+    text-shadow: 0 3px 0 rgba(232,97,141,.2);
+  }
+  .title .accent{ color: var(--pink-deep); }
+  .subtitle{
+    margin: 6px 0 28px;
+    font-weight:700;
+    color: var(--pink-deep);
+    letter-spacing:.5px;
+  }
+
+  .spotlight{
+    grid-column:2;
+    min-height: 140px;
+    display:flex; align-items:center; justify-content:center;
+    margin-bottom: 20px;
+  }
+  .spotlight-card{
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+    color:#fff;
+    padding: 26px 40px;
+    border-radius: 22px;
+    max-width: 700px;
+    text-align:center;
+    box-shadow: 0 20px 45px rgba(255,111,145,.4);
+    animation: pop .5s cubic-bezier(.26,1.4,.44,1);
+  }
+  @keyframes pop{
+    0%{ transform: scale(.4); opacity:0; }
+    100%{ transform: scale(1); opacity:1; }
+  }
+  .spotlight-card .who{
+    font-family:'Baloo 2', sans-serif;
+    font-size: 18px;
+    opacity:.9;
+    margin-bottom:6px;
+  }
+  .spotlight-card .msg{
+    font-size: 26px;
+    font-weight: 800;
+    line-height:1.3;
+  }
+  .spotlight-empty{
+    font-weight:700;
+    color: rgba(122,59,87,.45);
+    font-size: 18px;
+  }
+
+  .wall{
+    grid-column: 2;
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+    align-content:start;
+  }
+  .note{
+    background: var(--cream);
+    color: var(--ink);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 10px 25px rgba(232,97,141,.2);
+    transform: rotate(var(--r,-1deg));
+    animation: dropIn .4s ease-out;
+  }
+  .note:nth-child(3n){ --r: 1.5deg; }
+  .note:nth-child(3n+1){ --r: -2deg; }
+  .note:nth-child(3n+2){ --r: 0.5deg; }
+  @keyframes dropIn{
+    from{ opacity:0; transform: translateY(-14px) rotate(var(--r,0deg)); }
+    to{ opacity:1; transform: translateY(0) rotate(var(--r,0deg)); }
+  }
+  .note .who{
+    font-family:'Baloo 2', sans-serif;
+    font-size:14px;
+    color: var(--pink-deep);
+    margin-bottom:4px;
+  }
+  .note .txt{
+    font-weight:700;
+    font-size:15px;
+    line-height:1.35;
+  }
+
+  .sound-gate{
+    position:fixed; inset:0; z-index:10;
+    background: linear-gradient(135deg, var(--pink-deep), var(--pink));
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:18px; text-align:center; padding:20px;
+  }
+  .sound-gate button{
+    font-family:'Baloo 2', sans-serif;
+    font-size:20px;
+    padding: 16px 34px;
+    border:none; border-radius: 100px;
+    background: #fff; color: var(--pink-deep);
+    cursor:pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,.15);
+  }
+  .gear{
+    position:fixed; bottom:18px; right:18px; z-index:5;
+    background: rgba(122,59,87,.12); border:none; color: var(--ink);
+    width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:18px;
+    opacity:.4;
+  }
+  .gear:hover{ opacity:1; }
+
+  /* ---------- GUEST FORM VIEW ---------- */
+  .guest{
+    position:relative; z-index:1;
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    padding: 24px;
+  }
+  .guest-card{
+    background: var(--cream);
+    color: var(--ink);
+    width:100%; max-width: 420px;
+    border-radius: 24px;
+    padding: 32px 26px;
+    box-shadow: 0 25px 60px rgba(232,97,141,.3);
+    border: 1px solid #ffe1ec;
+  }
+  .guest-card h1{
+    font-family:'Baloo 2', sans-serif;
+    font-size: 26px;
+    margin: 0 0 4px;
+    color: var(--pink-deep);
+    text-align:center;
+  }
+  .guest-card .sub{
+    text-align:center;
+    font-weight:700;
+    color:#c58aa2;
+    margin: 0 0 24px;
+    font-size:14px;
+  }
+  label{
+    display:block; font-weight:800; font-size:13px;
+    color: var(--ink); margin: 14px 0 6px;
+  }
+  input[type=text], textarea{
+    width:100%; border: 2px solid #ffd6e6; border-radius:14px;
+    padding: 12px 14px; font-family:'Nunito',sans-serif; font-size:15px;
+    font-weight:600; color: var(--ink); resize:vertical;
+  }
+  input[type=text]:focus, textarea:focus{
+    outline:none; border-color: var(--pink-deep);
+  }
+  .send-btn{
+    margin-top: 20px; width:100%;
+    font-family:'Baloo 2', sans-serif; font-size:18px;
+    padding: 14px; border:none; border-radius: 100px;
+    background: var(--pink-deep); color:#fff; cursor:pointer;
+    box-shadow: 0 12px 25px rgba(232,97,141,.4);
+  }
+  .send-btn:disabled{ opacity:.6; cursor:default; }
+  .confirm{
+    display:none; text-align:center; padding: 20px 0;
+  }
+  .confirm.show{ display:block; }
+  .confirm .emoji{ font-size:44px; }
+  .again-btn{
+    margin-top:14px; background:none; border:2px solid var(--pink-deep);
+    color:var(--pink-deep); font-weight:800; padding:10px 22px; border-radius:100px; cursor:pointer;
+  }
+  .char-count{ text-align:right; font-size:12px; color:#c9899f; margin-top:4px; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="confetti" id="confetti"></div>
+
+<!-- ===== CHOICE SCREEN ===== -->
+<div id="chooserView" style="position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:24px;text-align:center;">
+  <div style="font-size:46px;">🎂</div>
+  <div style="font-family:'Baloo 2',sans-serif;font-size:26px;color:var(--pink-deep);">Anniversaire de Sarah</div>
+  <div style="font-weight:700;color:#c58aa2;max-width:320px;">Tu es un invité qui veut écrire un message, ou c'est l'écran de la fête ?</div>
+  <button id="chooseGuest" style="font-family:'Baloo 2',sans-serif;font-size:18px;padding:16px 30px;border:none;border-radius:100px;background:var(--pink-deep);color:#fff;cursor:pointer;box-shadow:0 12px 25px rgba(232,97,141,.4);">💌 J'écris un message</button>
+  <button id="chooseTv" style="font-family:'Baloo 2',sans-serif;font-size:14px;padding:10px 22px;border:2px solid var(--pink-deep);border-radius:100px;background:none;color:var(--pink-deep);cursor:pointer;">📺 Écran de la fête (organisateur)</button>
+</div>
+
+<!-- ===== TV DISPLAY VIEW ===== -->
+<div class="display hidden" id="displayView">
+  <div class="sound-gate" id="soundGate">
+    <div style="font-size:50px;">🎉</div>
+    <div style="font-family:'Baloo 2',sans-serif; font-size:22px;">Anniversaire de Sarah</div>
+    <div style="font-weight:700; max-width:360px; color:#ffe6f0;">Clique une fois pour activer le son des annonces, puis mets l'écran en plein écran !</div>
+    <button id="enableSound">🔊 C'est parti !</button>
+  </div>
+
+  <button class="gear" id="resetBtn" title="Réinitialiser les messages">⚙️</button>
+
+  <div class="invite-card">
+    <h2>💌 Un mot pour Sarah ?</h2>
+    <p>Scanne-moi avec ton téléphone</p>
+    <div id="qrcode"></div>
+    <div class="invite-hint" id="inviteHint">Ton message s'affichera sur l'écran ✨</div>
+
+    <div id="urlSetup" style="display:none; margin-top:14px; text-align:left;">
+      <label style="display:block; font-weight:800; font-size:12px; color:var(--ink); margin-bottom:6px;">
+        Colle ici le lien publié que Claude t'a donné :
+      </label>
+      <input type="text" id="siteUrlInput" placeholder="https://claude.site/public/..." style="width:100%; border:2px solid #ffd6e6; border-radius:12px; padding:10px 12px; font-size:13px; font-weight:600; color:var(--ink);">
+      <button id="saveUrlBtn" style="margin-top:8px; width:100%; background:var(--pink-deep); color:#fff; border:none; border-radius:100px; padding:10px; font-family:'Baloo 2',sans-serif; font-size:14px; cursor:pointer;">Enregistrer et afficher le QR</button>
+    </div>
+    <div id="urlSetupMsg" style="display:none; font-size:11px; color:#c58aa2; margin-top:6px; font-weight:700;"></div>
+    <a href="#" id="editUrlLink" style="display:none; font-size:11px; color:#c58aa2; margin-top:8px; display:inline-block;">modifier le lien</a>
+  </div>
+
+  <div class="wall-header">
+    <h1 class="title">Joyeux anniversaire <span class="accent">Sarah</span> 🎂</h1>
+    <div class="subtitle">MUR DE MESSAGES EN DIRECT</div>
+  </div>
+
+  <div class="spotlight" id="spotlight">
+    <div class="spotlight-empty">En attente du premier message... 👀</div>
+  </div>
+
+  <div class="wall" id="wall"></div>
+</div>
+
+<!-- ===== GUEST FORM VIEW ===== -->
+<div class="guest hidden" id="guestView">
+  <div class="guest-card">
+    <h1>💌 Un petit mot pour Sarah</h1>
+    <div class="sub">Ton message va s'afficher sur l'écran de la fête !</div>
+
+    <form id="guestForm">
+      <label for="name">Ton prénom (optionnel)</label>
+      <input type="text" id="name" maxlength="30" placeholder="Ex : Camille">
+
+      <label for="msg">Ton message</label>
+      <textarea id="msg" rows="4" maxlength="220" placeholder="Joyeux anniversaire !! 🎉" required></textarea>
+      <div class="char-count"><span id="count">0</span>/220</div>
+
+      <button type="button" class="send-btn" id="sendBtn">Envoyer 🎈</button>
+    </form>
+
+    <div class="confirm" id="confirm">
+      <div class="emoji">🎊</div>
+      <div style="font-weight:800; font-size:18px; margin:8px 0;">Message envoyé !</div>
+      <div style="color:#7a6a94; font-weight:600;">Regarde l'écran, il va bientôt apparaître 👀</div>
+      <button class="again-btn" id="againBtn">Écrire un autre message</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---------- confetti background ----------
+(function(){
+  const emojis = ['🎀','🌸','💗','✨','🎂'];
+  const c = document.getElementById('confetti');
+  for(let i=0;i<18;i++){
+    const s = document.createElement('span');
+    s.textContent = emojis[i % emojis.length];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.animationDuration = (10 + Math.random()*10) + 's';
+    s.style.animationDelay = (Math.random()*10) + 's';
+    s.style.fontSize = (16 + Math.random()*18) + 'px';
+    c.appendChild(s);
+  }
+})();
+
+// ---------- routing ----------
+// Le lien seul ne suffit pas à distinguer les deux vues (la page tourne dans
+// un cadre isolé qui ne reçoit pas les paramètres d'URL), donc on demande
+// simplement à la personne qui ouvre la page.
+document.getElementById('chooseGuest').addEventListener('click', () => {
+  document.getElementById('chooserView').classList.add('hidden');
+  document.getElementById('guestView').classList.remove('hidden');
+  initGuestView();
+});
+document.getElementById('chooseTv').addEventListener('click', () => {
+  document.getElementById('chooserView').classList.add('hidden');
+  document.getElementById('displayView').classList.remove('hidden');
+  initDisplayView();
+});
+
+// ============================================================
+// GUEST FORM
+// ============================================================
+function initGuestView(){
+  const form = document.getElementById('guestForm');
+  const msg = document.getElementById('msg');
+  const count = document.getElementById('count');
+  const sendBtn = document.getElementById('sendBtn');
+  const confirm = document.getElementById('confirm');
+  const againBtn = document.getElementById('againBtn');
+
+  msg.addEventListener('input', () => count.textContent = msg.value.length);
+
+  async function sendMessage(){
+    const text = msg.value.trim();
+    if(!text){
+      msg.style.borderColor = '#e8618d';
+      msg.focus();
+      return;
+    }
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Envoi...';
+    const key = 'msg-' + Date.now() + '-' + Math.random().toString(36).slice(2,8);
+    const payload = {
+      name: document.getElementById('name').value.trim() || 'Un invité',
+      text,
+      ts: Date.now()
+    };
+    try{
+      const res = await window.storage.set(key, JSON.stringify(payload), true);
+      if(!res){ throw new Error('echec'); }
+      form.classList.add('hidden');
+      confirm.classList.add('show');
+    }catch(err){
+      alert("Oups, le message n'a pas pu être envoyé. Réessaie !");
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Envoyer 🎈';
+    }
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+
+  againBtn.addEventListener('click', () => {
+    form.reset();
+    count.textContent = '0';
+    sendBtn.disabled = false;
+    sendBtn.textContent = 'Envoyer 🎈';
+    confirm.classList.remove('show');
+    form.classList.remove('hidden');
+  });
+}
+
+// ============================================================
+// TV DISPLAY
+// ============================================================
+function initDisplayView(){
+  // QR code pointing to the guest form — the organizer sets the public
+  // link once and it's remembered (shared storage) for every future visit.
+  const qrDiv = document.getElementById('qrcode');
+  const urlSetup = document.getElementById('urlSetup');
+  const inviteHint = document.getElementById('inviteHint');
+  const editUrlLink = document.getElementById('editUrlLink');
+  const urlSetupMsg = document.getElementById('urlSetupMsg');
+  const siteUrlInput = document.getElementById('siteUrlInput');
+
+  function buildQr(baseUrl){
+    qrDiv.innerHTML = '';
+    const guestUrl = baseUrl.replace(/\/$/, '').split('#')[0] + '#ecrire';
+    new QRCode(qrDiv, {
+      text: guestUrl,
+      width: 170,
+      height: 170,
+      colorDark: '#241436',
+      colorLight: '#ffffff'
+    });
+    urlSetup.style.display = 'none';
+    inviteHint.style.display = 'block';
+    editUrlLink.style.display = 'inline-block';
+  }
+
+  function showSetup(message){
+    qrDiv.innerHTML = '';
+    urlSetup.style.display = 'block';
+    inviteHint.style.display = 'none';
+    editUrlLink.style.display = 'none';
+    if(message){
+      urlSetupMsg.textContent = message;
+      urlSetupMsg.style.display = 'block';
+    }else{
+      urlSetupMsg.style.display = 'none';
+    }
+  }
+
+  (async function initQr(){
+    try{
+      const saved = await window.storage.get('site-url', true);
+      if(saved && saved.value && saved.value.startsWith('http')){
+        buildQr(saved.value);
+      }else{
+        showSetup();
+      }
+    }catch(e){
+      showSetup();
+    }
+  })();
+
+  document.getElementById('saveUrlBtn').addEventListener('click', async () => {
+    const val = siteUrlInput.value.trim();
+    if(!val.startsWith('http')){
+      urlSetupMsg.textContent = "Le lien doit commencer par https://";
+      urlSetupMsg.style.display = 'block';
+      return;
+    }
+    try{
+      await window.storage.set('site-url', val, true);
+      buildQr(val);
+    }catch(e){
+      urlSetupMsg.textContent = "Erreur d'enregistrement, réessaie.";
+      urlSetupMsg.style.display = 'block';
+    }
+  });
+
+  editUrlLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    showSetup();
+  });
+
+  const wall = document.getElementById('wall');
+  const spotlight = document.getElementById('spotlight');
+  const seen = new Set();
+  let audioCtx = null;
+
+  function playChime(){
+    try{
+      if(!audioCtx) return;
+      const now = audioCtx.currentTime;
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.0001, now + i*0.12);
+        gain.gain.exponentialRampToValueAtTime(0.25, now + i*0.12 + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i*0.12 + 0.6);
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(now + i*0.12);
+        osc.stop(now + i*0.12 + 0.7);
+      });
+    }catch(e){}
+  }
+
+  function showSpotlight(item){
+    spotlight.innerHTML = `
+      <div class="spotlight-card">
+        <div class="who">💌 ${escapeHtml(item.name)}</div>
+        <div class="msg">${escapeHtml(item.text)}</div>
+      </div>`;
+  }
+
+  function addToWall(item){
+    const note = document.createElement('div');
+    note.className = 'note';
+    note.innerHTML = `<div class="who">${escapeHtml(item.name)}</div><div class="txt">${escapeHtml(item.text)}</div>`;
+    wall.prepend(note);
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  async function poll(initial){
+    try{
+      const listRes = await window.storage.list('msg-', true);
+      if(!listRes || !listRes.keys) return;
+      const newKeys = listRes.keys.filter(k => !seen.has(k));
+      if(newKeys.length === 0) return;
+
+      // fetch newest-first for correct ordering
+      const items = [];
+      for(const k of newKeys){
+        seen.add(k);
+        try{
+          const r = await window.storage.get(k, true);
+          if(r && r.value) items.push(JSON.parse(r.value));
+        }catch(e){}
+      }
+      items.sort((a,b) => a.ts - b.ts);
+
+      if(initial){
+        items.forEach(addToWall);
+        if(items.length){
+          spotlight.innerHTML = '';
+          showSpotlight(items[items.length-1]);
+        }
+      }else{
+        for(const item of items){
+          playChime();
+          showSpotlight(item);
+          addToWall(item);
+          await new Promise(r => setTimeout(r, 350));
+        }
+      }
+    }catch(e){ /* fail silently, retry next tick */ }
+  }
+
+  poll(true).then(() => {
+    setInterval(() => poll(false), 4000);
+  });
+
+  // sound unlock gate
+  document.getElementById('enableSound').addEventListener('click', () => {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    document.getElementById('soundGate').style.display = 'none';
+    playChime();
+  });
+
+  // organizer reset
+  document.getElementById('resetBtn').addEventListener('click', async () => {
+    if(!confirm('Effacer tous les messages du mur ?')) return;
+    const listRes = await window.storage.list('msg-', true);
+    if(listRes && listRes.keys){
+      for(const k of listRes.keys){
+        try{ await window.storage.delete(k, true); }catch(e){}
+      }
+    }
+    wall.innerHTML = '';
+    spotlight.innerHTML = '<div class="spotlight-empty">En attente du premier message... 👀</div>';
+    seen.clear();
+  });
+}
+</script>
+</body>
+</html>
