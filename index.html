@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anniversaire de Sarah</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabaseClient/supabaseClient-js@2"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   :root{
@@ -325,19 +325,19 @@
 
 <script>
 /* ============================================================
-   CONFIGURATION SUPABASE
+   CONFIGURATION supabaseClient
    Remplace seulement les deux valeurs ci-dessous.
    ============================================================ */
-const SUPABASE_URL = 'https://srtdxlkdbhzsfcbfdnbz.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_bmZIbRNZR6yKOBS4ltHdFw_Bkbk1Pvp';
+const supabaseClient_URL = 'https://srtdxlkdbhzsfcbfdnbz.supabaseClient.co';
+const supabaseClient_ANON_KEY = 'sb_publishable_bmZIbRNZR6yKOBS4ltHdFw_Bkbk1Pvp';
 
-const supabaseReady =
-  SUPABASE_URL.startsWith('https://') &&
-  !SUPABASE_URL.includes('COLLE_ICI') &&
-  !SUPABASE_ANON_KEY.includes('COLLE_ICI');
+const supabaseClientReady =
+  supabaseClient_URL.startsWith('https://') &&
+  !supabaseClient_URL.includes('COLLE_ICI') &&
+  !supabaseClient_ANON_KEY.includes('COLLE_ICI');
 
-const supabase = supabaseReady
-  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const supabaseClientClient = supabaseClientReady
+  ? window.supabase.createClient(supabaseClient_URL, supabaseClient_ANON_KEY)
   : null;
 
 /* ---------- confetti background ---------- */
@@ -363,7 +363,7 @@ function escapeHtml(str){
 }
 
 function showConfigError(){
-  alert("La connexion à Supabase n'est pas encore configurée. Demande à Nathaël de compléter SUPABASE_URL et SUPABASE_ANON_KEY dans le fichier.");
+  alert("La connexion à supabaseClient n'est pas encore configurée. Demande à Nathaël de compléter supabaseClient_URL et supabaseClient_ANON_KEY dans le fichier.");
 }
 
 /* ---------- routing ---------- */
@@ -419,7 +419,7 @@ function initGuestView(){
       return;
     }
 
-    if(!supabase){
+    if(!supabaseClient){
       showConfigError();
       return;
     }
@@ -430,7 +430,7 @@ function initGuestView(){
     const name = document.getElementById('name').value.trim() || 'Un invité';
 
     try{
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from('messages')
         .insert({
           name: name,
@@ -443,7 +443,7 @@ function initGuestView(){
       confirmBox.classList.add('show');
 
     }catch(err){
-      console.error('Erreur Supabase:', err);
+      console.error('Erreur supabaseClient:', err);
       alert("Oups, le message n'a pas pu être envoyé. Vérifie ta connexion Internet et réessaie.");
       sendBtn.disabled = false;
       sendBtn.textContent = 'Envoyer 🎈';
@@ -548,12 +548,12 @@ function initDisplayView(){
   }
 
   async function loadExistingMessages(){
-    if(!supabase){
-      spotlight.innerHTML = '<div class="spotlight-empty">⚠️ Supabase n’est pas configuré.</div>';
+    if(!supabaseClient){
+      spotlight.innerHTML = '<div class="spotlight-empty">⚠️ supabaseClient n’est pas configuré.</div>';
       return;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('messages')
       .select('id,name,message,created_at')
       .order('created_at', { ascending: true });
@@ -590,8 +590,8 @@ function initDisplayView(){
   loadExistingMessages();
 
   /* Temps réel : la TV reçoit les nouveaux messages dès leur insertion. */
-  if(supabase){
-    supabase
+  if(supabaseClient){
+    supabaseClient
       .channel('messages-live')
       .on(
         'postgres_changes',
