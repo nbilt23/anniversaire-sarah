@@ -141,20 +141,68 @@
   letter-spacing:.5px;
   }
 
-  .spotlight{
+  /* ============================================================
+   MISE EN PAGE ÉCRAN DE LA FÊTE
+   ============================================================ */
+
+/* Zone du dernier message */
+.spotlight{
   position:absolute;
-  top:125px;
+  top:200px;
   left:428px;
   right:48px;
-  height:150px;
+  height:190px;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   margin:0;
+  z-index:3;
 }
 
+/* Carte du dernier message */
 .spotlight-card{
   width:min(700px,90%);
+  max-width:700px;
+
+  background:linear-gradient(
+    135deg,
+    var(--pink-deep),
+    var(--pink)
+  );
+
+  color:#fff;
+
+  padding:26px 40px;
+
+  border-radius:22px;
+
+  text-align:center;
+
+  box-shadow:
+    0 20px 45px rgba(255,111,145,.4);
+
+  animation:pop .5s cubic-bezier(.26,1.4,.44,1);
+}
+
+/* Mur des anciens messages */
+.wall{
+  position:absolute;
+
+  top:410px;
+  left:428px;
+  right:48px;
+
+  display:grid;
+  grid-template-columns:
+    repeat(auto-fill,minmax(220px,1fr));
+
+  gap:18px;
+
+  align-content:start;
+
+  z-index:2;
 }
 
   @keyframes pop{
