@@ -237,11 +237,17 @@
   }
 
   .wall{
-    grid-column:2;
-    display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-    gap:18px;
-    align-content:start;
+  position:absolute;
+  top:410px;
+  left:428px;
+  right:48px;
+
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:18px;
+
+  align-content:start;
+  z-index:2;
   }
 
   .note{
@@ -439,22 +445,24 @@
   }
 
   /* ---------- POSITION DU MESSAGE PRINCIPAL ---------- */
-.spotlight{
-  position: absolute;
-  top: 210px;
-  left: 428px;
-  right: 48px;
-  height: 170px;
-  min-height: 0;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.spotlight-card{
-  width: min(700px, 90%);
-}
+  .spotlight{
+    position:absolute;
+    top:200px;
+    left:428px;
+    right:48px;
+    height:190px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    z-index:3;
+  }
+
+  .spotlight-card{
+    width: min(700px, 90%);
+  }
   
 </style>
 </head>
