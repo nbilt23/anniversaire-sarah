@@ -333,8 +333,8 @@ const SUPABASE_ANON_KEY = 'sb_publishable_bmZIbRNZR6yKOBS4ltHdFw_Bkbk1Pvp';
 
 const supabaseReady =
   SUPABASE_URL.startsWith('https://') &&
-  !SUPABASE_URL.includes('COLLE_ICI') &&
-  !SUPABASE_ANON_KEY.includes('COLLE_ICI');
+  !SUPABASE_URL.includes('srtdxlkdbhzsfcbfdnbz.supabase.co') &&
+  !SUPABASE_ANON_KEY.includes('Csb_publishable_bmZIbRNZR6yKOBS4ltHdFw_Bkbk1Pvp');
 
 const supabase = supabaseReady
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
